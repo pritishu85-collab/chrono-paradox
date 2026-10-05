@@ -2,7 +2,7 @@
 
 **Four realities. One world. One chance to change it.**
 
-This version keeps the Step 2 lobby and Four Reality System, but replaces the local-only SSE server with Vercel WebSockets and Redis-backed room state.
+This version keeps the Step 2 lobby and Four Reality System, using Vercel Functions for HTTP actions, WebSockets for realtime updates, and Redis for shared room state.
 
 ## Included
 - Real 2–4 player rooms
@@ -15,23 +15,24 @@ This version keeps the Step 2 lobby and Four Reality System, but replaces the lo
 - WebSocket reconnect handling
 - Redis-backed state so different Vercel function instances can share the same room
 - 6-hour room TTL
+- Vercel HTTP routes implemented with the current Web Standard Request/Response function format
 
 ## Production requirement
-For Vercel, connect an Upstash Redis database through the Vercel Marketplace and set the injected `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` environment variables. Vercel's current guidance recommends external Redis for durable state across WebSocket connections.
+For reliable multiplayer across Vercel function instances, connect an Upstash Redis database through the Vercel Marketplace and provide `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` as environment variables.
 
 ## Local development
 `npm install`
 `npm start`
 
-If Redis environment variables are absent locally, the app uses an in-memory store for local testing. Production Vercel multiplayer must use Redis; the deployment checklist below includes this step.
+If Redis environment variables are absent locally, the app uses an in-memory store for local testing only.
 
 ## Test
 `npm test`
 
 ## Deployment
-1. Upload this folder to GitHub.
-2. In Vercel: Add New → Project → import the GitHub repository.
-3. Add an Upstash Redis integration from Vercel Marketplace.
-4. Deploy.
-5. Open the Vercel URL in 2–4 browser windows/devices.
+1. Upload this folder's contents to the root of the GitHub repository.
+2. In Vercel, import that repository.
+3. Connect Upstash Redis from the Vercel Marketplace.
+4. Redeploy.
+5. Open the Vercel URL in 2–4 browser windows.
 6. Create a room in one window, join from the others, Ready Up, and Start.

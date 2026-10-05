@@ -5,7 +5,7 @@
   "description": "CHRONO PARADOX - Vercel-ready 2–4 player realtime multiplayer prototype",
   "scripts": {
     "start": "node local-server.js",
-    "test": "node tests/game.test.js"
+    "test": "node tests/game.test.js && node tests/vercel-api.test.mjs"
   },
   "engines": {"node": ">=20"},
   "dependencies": {

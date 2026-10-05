@@ -3,7 +3,10 @@ let session={roomCode:null,playerId:null,playerNumber:null,host:false}, socket, 
 
 async function api(path,data){
   const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data||{})});
-  const j=await r.json(); if(!r.ok)throw Error(j.error||'Request failed'); return j;
+  const text=await r.text();
+  let j;
+  try{ j=JSON.parse(text); }catch{ throw Error(`Server route ${path} did not return JSON (HTTP ${r.status}). Please redeploy the latest version.`); }
+  if(!r.ok)throw Error(j.error||'Request failed'); return j;
 }
 function message(t){$('message').textContent=t||''}
 function screen(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active')}
@@ -69,7 +72,7 @@ async function join(){let code=$('roomCode').value.trim();if(code.length!==6)ret
 async function toggleReady(){try{await api('/api/action',{roomCode:session.roomCode,playerId:session.playerId,action:'ready'})}catch(e){message(e.message)}}
 async function start(){try{await api('/api/action',{roomCode:session.roomCode,playerId:session.playerId,action:'start'})}catch(e){message(e.message)}}
 
-$('enterBtn').onclick=()=>{screen('lobbyScreen');$('connection').innerHTML='<i></i> Connecting…'};
+$('enterBtn').onclick=()=>{screen('lobbyScreen');$('connection').classList.remove('online');$('connection').innerHTML='<i></i> Not connected';};
 $('createBtn').onclick=create;$('joinBtn').onclick=join;$('startBtn').onclick=start;
 $('roomCode').oninput=e=>e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
 $('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(session.roomCode);$('copyBtn').textContent='COPIED';setTimeout(()=>$('copyBtn').textContent='COPY CODE',1200)}catch{message('Share room code: '+session.roomCode)}};
