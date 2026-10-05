@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CHRONO PARADOX</title><link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="stars"></div><main class="app">
+<section id="titleScreen" class="screen active">
+  <div class="title-wrap"><div class="eyebrow">COOPERATIVE TEMPORAL ADVENTURE</div>
+  <h1>CHRONO <span>PARADOX</span></h1><p class="tagline">Four realities. One world. One chance to change it.</p>
+  <div class="timeline-orbit"><span>PAST</span><i></i><span>PRESENT</span><i></i><span>FUTURE</span><i></i><span>ECHO</span></div>
+  <button id="enterBtn" class="primary">ENTER THE PARADOX <b>→</b></button></div>
+</section>
+
+<section id="lobbyScreen" class="screen"><div class="panel">
+<header class="panel-head"><div><div class="eyebrow">CHRONO PARADOX</div><h2>Temporal Lobby</h2><p>Gather 2–4 players. Every perspective matters.</p></div><div id="connection" class="connection"><i></i> Connecting</div></header>
+<div id="menu" class="menu-grid"><button id="createBtn" class="menu-card"><span class="icon">＋</span><strong>Create Game</strong><small>Start a new timeline</small></button>
+<div class="join-card"><span class="icon">⌁</span><strong>Join Game</strong><small>Enter a friend's room code</small><div class="join-row"><input id="roomCode" maxlength="6" placeholder="ROOM CODE"><button id="joinBtn" class="secondary">JOIN</button></div></div></div>
+<div id="room" class="room hidden"><div class="room-banner"><div><span class="label">ROOM CODE</span><strong id="roomCodeDisplay">------</strong></div><button id="copyBtn" class="ghost">COPY CODE</button></div>
+<div class="players-head"><span>PLAYERS <b id="playerCount">0/4</b></span><span>READY <b id="readyCount">0/2</b></span></div><div id="players" class="players"></div>
+<div class="room-footer"><p id="roomHint">Waiting for players…</p><button id="startBtn" class="primary" disabled>START GAME <b>→</b></button></div></div>
+<div id="message" class="message"></div>
+</div></section>
+
+<section id="realityScreen" class="screen"><div class="reality-shell">
+  <header class="reality-header"><div><div class="eyebrow">TEMPORAL SYNCHRONIZATION COMPLETE</div><h2 id="realityName">REALITY</h2><p id="realitySubtitle"></p></div><div class="reality-badge" id="realityBadge">R-?</div></header>
+  <div class="reality-intro"><div class="signal"></div><span>PLAYER <b id="realityPlayer">--</b> · PRIVATE PERSPECTIVE</span></div>
+  <div class="world-grid"><section class="world-card shared"><div class="card-label">SHARED WORLD</div><h3 id="worldName">THE FRACTURED CHAMBER</h3><p id="worldDescription"></p><div id="objects" class="object-list"></div></section>
+  <section class="world-card private"><div class="card-label" id="secretTitle">PRIVATE INFORMATION</div><div class="private-symbol">◈</div><h3 id="secretText"></h3><p id="clueText"></p><div class="privacy-note">This information is unique to your reality.</div></section></div>
+  <div class="reality-footer"><span>FOUR REALITIES · ONE WORLD</span><span id="realityHint">Communicate what you see.</span></div>
+</div></section>
+</main><script src="/app.js"></script></body></html>

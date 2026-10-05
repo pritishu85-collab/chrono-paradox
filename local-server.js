@@ -1,0 +1,22 @@
+const http=require('http');
+const fs=require('fs');
+const path=require('path');
+const {WebSocketServer}=require('ws');
+const create=require('./api/create');
+const join=require('./api/join');
+const action=require('./api/action');
+const {attachRealtimeConnection}=require('./lib/ws-handler');
+const PORT=process.env.PORT||3000;
+const server=http.createServer((req,res)=>{
+  const u=new URL(req.url,`http://${req.headers.host}`);
+  if(u.pathname==='/api/create') return create(req,res);
+  if(u.pathname==='/api/join') return join(req,res);
+  if(u.pathname==='/api/action') return action(req,res);
+  let file=u.pathname==='/'?'/index.html':u.pathname;
+  const fp=path.normalize(path.join(__dirname,file));
+  if(!fp.startsWith(__dirname)) return res.writeHead(403).end();
+  fs.readFile(fp,(err,data)=>{if(err)return res.writeHead(404).end('Not found');const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8'};res.writeHead(200,{'Content-Type':types[path.extname(fp)]||'application/octet-stream'});res.end(data);});
+});
+const wss=new WebSocketServer({server});
+wss.on('connection',(ws,req)=>attachRealtimeConnection(ws,req));
+server.listen(PORT,()=>console.log(`CHRONO PARADOX local server at http://localhost:${PORT}`));
