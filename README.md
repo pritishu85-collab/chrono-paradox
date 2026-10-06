@@ -52,3 +52,6 @@ Expected fields include:
 - `redisHealthy: true`
 
 Then test with 4 browser windows.
+
+
+Redis compatibility: this build recognizes standard Upstash/Vercel names plus the current Vercel integration names `UPSTASH_REDIS_REST_KV_REST_API_URL` / `UPSTASH_REDIS_REST_KV_REST_API_TOKEN`.
