@@ -1,4 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "fluid": true
+  "fluid": true,
+  "rewrites": [
+    { "source": "/api/create", "destination": "/api/index.js" },
+    { "source": "/api/join", "destination": "/api/index.js" },
+    { "source": "/api/action", "destination": "/api/index.js" },
+    { "source": "/api/health", "destination": "/api/index.js" }
+  ]
 }
