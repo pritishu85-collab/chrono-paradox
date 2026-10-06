@@ -63,6 +63,7 @@ function renderReality(g){
   $('secretTitle').textContent=g.secretTitle;
   $('secretText').textContent=g.secret;
   $('clueText').textContent=g.clue;
+  renderTemporal(g);
   document.body.dataset.reality=g.reality.toLowerCase();
   screen('realityScreen');
 }
@@ -71,6 +72,27 @@ async function create(){try{let j=await api('/api/create');session={...session,.
 async function join(){let code=$('roomCode').value.trim();if(code.length!==6)return message('Enter the 6-character room code.');try{let j=await api('/api/join',{roomCode:code});session={...session,...j};$('menu').classList.add('hidden');$('room').classList.remove('hidden');connectEvents()}catch(e){message(e.message)}}
 async function toggleReady(){try{await api('/api/action',{roomCode:session.roomCode,playerId:session.playerId,action:'ready'})}catch(e){message(e.message)}}
 async function start(){try{await api('/api/action',{roomCode:session.roomCode,playerId:session.playerId,action:'start'})}catch(e){message(e.message)}}
+async function temporalAction(action){try{await api('/api/action',{roomCode:session.roomCode,playerId:session.playerId,action})}catch(e){message(e.message)}}
+function renderTemporal(g){
+  const t=g.temporal||{};
+  const phase=t.completed?'SEQUENCE COMPLETE':t.echoTraced?'ECHO TRACE COMPLETE':t.futureScanned?'FINAL STEP: FOLLOW THE ECHO':t.panelActivated?'NEXT: SCAN THE FUTURE':t.originRevealed?'NEXT: ACTIVATE THE PRESENT PANEL':'NEXT: REVEAL THE PAST CONTROL';
+  $('temporalPhase').textContent=phase;
+  const labels={inspect_origin:'REVEAL ORIGIN',activate_panel:'ACTIVATE PANEL',scan_future:'SCAN FUTURE',follow_echo:'FOLLOW ECHO'};
+  const action=g.availableActions&&g.availableActions[0];
+  const btn=$('temporalAction');
+  btn.textContent=action?labels[action]:'WAIT FOR THE TIMELINE';
+  btn.disabled=!action;
+  btn.onclick=()=>action&&temporalAction(action);
+  $('temporalStatus').innerHTML=[
+    ['PAST','Original control',t.originRevealed],
+    ['PRESENT','Control panel',t.panelActivated],
+    ['FUTURE','Future warning',t.futureScanned],
+    ['ECHO','Temporal trace',t.echoTraced]
+  ].map(x=>`<div class="step ${x[2]?'done':''}"><span>${x[2]?'✓':'○'}</span><div><b>${x[0]}</b><small>${x[1]}</small></div></div>`).join('');
+  $('eventLog').innerHTML=(t.eventLog&&t.eventLog.length?t.eventLog.map(e=>`<div class="event"><span>P${e.playerNumber}</span><p>${e.label}</p></div>`).join(''):'<div class="event empty">No temporal actions yet. Communicate with the other realities.</div>');
+  $('realityHint').textContent=t.completed?'The temporal door responds. All four realities contributed.':"Communicate what you see, then take your reality's step.";
+}
+window.temporalAction=temporalAction;
 
 $('enterBtn').onclick=()=>{screen('lobbyScreen');$('connection').classList.remove('online');$('connection').innerHTML='<i></i> Not connected';};
 $('createBtn').onclick=create;$('joinBtn').onclick=join;$('startBtn').onclick=start;

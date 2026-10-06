@@ -36,3 +36,14 @@ If Redis environment variables are absent locally, the app uses an in-memory sto
 4. Redeploy.
 5. Open the Vercel URL in 2–4 browser windows.
 6. Create a room in one window, join from the others, Ready Up, and Start.
+
+
+## Step 3 — Temporal Interaction System
+
+The four realities now form a simple shared sequence in The Fractured Chamber:
+1. PAST reveals the original temporal control.
+2. PRESENT activates the damaged control panel.
+3. FUTURE scans the resulting warning.
+4. ECHO follows the temporal trace and completes the sequence.
+
+Each action is server-authoritative, persisted in the shared room state, and broadcast to every connected player. The event log is shared; each player still receives only their own private reality information.
