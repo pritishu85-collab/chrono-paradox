@@ -1,49 +1,54 @@
-# CHRONO PARADOX — Step 2 (Vercel-ready)
+# CHRONO PARADOX — Step 3
 
 **Four realities. One world. One chance to change it.**
 
-This version keeps the Step 2 lobby and Four Reality System, using Vercel Functions for HTTP actions, WebSockets for realtime updates, and Redis for shared room state.
+Step 3 adds the first shared gameplay interaction: the **Temporal Event**. The event is server-authoritative and persisted in the same Redis-backed room state used by the lobby.
 
-## Included
-- Real 2–4 player rooms
-- Create / Join by 6-character code
-- Host + ready system
-- Host can start once at least 2 players are ready
-- Deterministic reality assignment: P1 PAST, P2 PRESENT, P3 FUTURE, P4 ECHO
-- Shared test environment: THE FRACTURED CHAMBER
-- Private reality information is only sent to the matching player session
-- WebSocket reconnect handling
-- Redis-backed state so different Vercel function instances can share the same room
-- 6-hour room TTL
-- Vercel HTTP routes implemented with the current Web Standard Request/Response function format
+## What is included
 
-## Production requirement
-For reliable multiplayer across Vercel function instances, connect an Upstash Redis database through the Vercel Marketplace and provide `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` as environment variables.
+- 2–4 player lobby
+- PAST / PRESENT / FUTURE / ECHO reality assignment
+- Shared world with private information per reality
+- Server-authoritative realtime state over WebSockets
+- Redis-backed room state
+- Reconnect with exponential backoff
+- Temporal Event with four simple phases:
+  1. DORMANT
+  2. SURGE
+  3. AFTERMATH
+  4. STABLE
+- Every phase gives each reality a different private observation
+- Any connected player can advance the shared event
+- No weapons, enemies, scoring, or complex puzzle system yet
 
-## Local development
-`npm install`
-`npm start`
+## Vercel
 
-If Redis environment variables are absent locally, the app uses an in-memory store for local testing only.
+This project uses Vercel's Node.js WebSocket support with the `ws` package. Vercel documents WebSocket Functions as supported on Fluid compute.
 
-## Test
-`npm test`
+Keep the existing Upstash/Vercel Redis environment variables. Do not rename or delete them.
+
+## Local test
+
+```bash
+npm install
+npm test
+npm start
+```
+
+Open `http://localhost:3000` in two or more browser windows.
 
 ## Deployment
-1. Upload this folder's contents to the root of the GitHub repository.
-2. In Vercel, import that repository.
-3. Connect Upstash Redis from the Vercel Marketplace.
-4. Redeploy.
-5. Open the Vercel URL in 2–4 browser windows.
-6. Create a room in one window, join from the others, Ready Up, and Start.
 
+Replace the files in the GitHub repository with this ZIP, commit the change, and let Vercel deploy the new commit.
 
-## Step 3 — Temporal Interaction System
+After deployment, check:
 
-The four realities now form a simple shared sequence in The Fractured Chamber:
-1. PAST reveals the original temporal control.
-2. PRESENT activates the damaged control panel.
-3. FUTURE scans the resulting warning.
-4. ECHO follows the temporal trace and completes the sequence.
+`/api/health`
 
-Each action is server-authoritative, persisted in the shared room state, and broadcast to every connected player. The event log is shared; each player still receives only their own private reality information.
+Expected fields include:
+
+- `ok: true`
+- `redisConfigured: true`
+- `redisHealthy: true`
+
+Then test with 4 browser windows.

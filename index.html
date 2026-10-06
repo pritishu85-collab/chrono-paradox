@@ -28,11 +28,12 @@
   <div class="reality-intro"><div class="signal"></div><span>PLAYER <b id="realityPlayer">--</b> · PRIVATE PERSPECTIVE</span></div>
   <div class="world-grid"><section class="world-card shared"><div class="card-label">SHARED WORLD</div><h3 id="worldName">THE FRACTURED CHAMBER</h3><p id="worldDescription"></p><div id="objects" class="object-list"></div></section>
   <section class="world-card private"><div class="card-label" id="secretTitle">PRIVATE INFORMATION</div><div class="private-symbol">◈</div><h3 id="secretText"></h3><p id="clueText"></p><div class="privacy-note">This information is unique to your reality.</div></section></div>
-  <section class="temporal-console">
-    <div class="console-head"><div><div class="card-label">SHARED TEMPORAL SEQUENCE</div><h3 id="temporalPhase">NEXT: REVEAL THE PAST CONTROL</h3></div><button id="temporalAction" class="primary" disabled>WAIT FOR THE TIMELINE</button></div>
-    <div id="temporalStatus" class="sequence-steps"></div>
-    <div class="event-panel"><div class="card-label">SHARED EVENT LOG</div><div id="eventLog" class="event-log"><div class="event empty">No temporal actions yet.</div></div></div>
+  <section class="temporal-event-card">
+    <div class="event-top"><div><div class="card-label">LIVE SHARED EVENT</div><h3 id="eventTitle">TEMPORAL EVENT: DORMANT</h3></div><span id="eventPhase" class="event-phase">PHASE 1 / 4</span></div>
+    <p id="eventShared" class="event-shared"></p>
+    <div class="event-private"><span class="private-dot">◈</span><div><strong>YOUR TEMPORAL VIEW</strong><p id="eventPrivate"></p></div></div>
+    <div class="event-actions"><span id="eventActor">No action yet</span><button id="temporalBtn" class="primary">TRIGGER TEMPORAL SURGE <b>→</b></button></div>
   </section>
-  <div class="reality-footer"><span>FOUR REALITIES · ONE WORLD</span><span id="realityHint">Communicate what you see.</span></div>
+  <div class="reality-footer"><span>FOUR REALITIES · ONE WORLD</span><span id="realityHint">Communicate what you see, then change the timeline together.</span></div>
 </div></section>
 </main><script src="/app.js"></script></body></html>

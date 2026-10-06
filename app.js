@@ -1,30 +1,38 @@
 const $=id=>document.getElementById(id);
-let session={roomCode:null,playerId:null,playerNumber:null,host:false}, socket, reconnectTimer;
+let session={roomCode:null,playerId:null,playerNumber:null,host:false}, socket, reconnectTimer, reconnectDelay=1000;
 
 async function api(path,data){
   const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data||{})});
   const text=await r.text();
   let j;
-  try{ j=JSON.parse(text); }catch{ throw Error(`Server route ${path} did not return JSON (HTTP ${r.status}). Please redeploy the latest version.`); }
-  if(!r.ok)throw Error(j.error||'Request failed'); return j;
+  try{j=JSON.parse(text);}catch{throw Error(`Server route ${path} did not return JSON (HTTP ${r.status}). Please redeploy the latest version.`);}
+  if(!r.ok)throw Error(j.error||'Request failed');
+  return j;
 }
-function message(t){$('message').textContent=t||''}
-function screen(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active')}
+function message(t){$('message').textContent=t||'';}
+function screen(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');}
+
+function setConnection(text,online=false){
+  $('connection').classList.toggle('online',online);
+  $('connection').innerHTML=`<i></i> ${text}`;
+}
 
 function connectEvents(){
-  if(socket){try{socket.close()}catch{}}
+  if(socket){try{socket.close(1000,'reconnect')}catch{}}
   clearTimeout(reconnectTimer);
+  if(!session.roomCode||!session.playerId)return;
   const proto=location.protocol==='https:'?'wss':'ws';
   const url=`${proto}://${location.host}/api/ws?room=${encodeURIComponent(session.roomCode)}&player=${encodeURIComponent(session.playerId)}`;
+  setConnection('Connecting…');
   socket=new WebSocket(url);
-  $('connection').classList.remove('online');$('connection').innerHTML='<i></i> Connecting…';
-  socket.onopen=()=>{$('connection').classList.add('online');$('connection').innerHTML='<i></i> Connected'};
-  socket.onmessage=e=>handle(JSON.parse(e.data));
-  socket.onerror=()=>{$('connection').classList.remove('online');$('connection').innerHTML='<i></i> Reconnecting…'};
+  socket.onopen=()=>{reconnectDelay=1000;setConnection('Connected',true);};
+  socket.onmessage=e=>{try{handle(JSON.parse(e.data));}catch(error){console.error('Realtime message error',error);}};
+  socket.onerror=()=>setConnection('Reconnecting…');
   socket.onclose=()=>{
-    $('connection').classList.remove('online');
-    $('connection').innerHTML='<i></i> Reconnecting…';
-    clearTimeout(reconnectTimer); reconnectTimer=setTimeout(connectEvents,1200);
+    setConnection('Reconnecting…');
+    clearTimeout(reconnectTimer);
+    reconnectTimer=setTimeout(connectEvents,reconnectDelay);
+    reconnectDelay=Math.min(reconnectDelay*2,8000);
   };
 }
 
@@ -45,9 +53,10 @@ function render(s){
 }
 
 function handle(m){
-  if(m.type==='room_state') render(m);
-  if(m.type==='game_started') message('');
-  if(m.type==='game_state') renderReality(m);
+  if(m.type==='room_state')render(m);
+  if(m.type==='game_started')message('');
+  if(m.type==='game_state')renderReality(m);
+  if(m.type==='server_error')message(m.error);
 }
 
 function renderReality(g){
@@ -63,39 +72,33 @@ function renderReality(g){
   $('secretTitle').textContent=g.secretTitle;
   $('secretText').textContent=g.secret;
   $('clueText').textContent=g.clue;
-  renderTemporal(g);
+
+  const ev=g.temporalEvent;
+  $('eventTitle').textContent=ev.title;
+  $('eventShared').textContent=ev.shared;
+  $('eventPrivate').textContent=ev.private;
+  $('eventPhase').textContent=`PHASE ${ev.phaseNumber+1} / 4`;
+  $('eventActor').textContent=ev.lastActor?`Last action: Player ${ev.lastActor}`:'No action yet';
+  $('temporalBtn').textContent=ev.actionLabel;
+  $('temporalBtn').disabled=!ev.actionAvailable;
+  $('temporalBtn').classList.toggle('complete',!ev.actionAvailable);
+
   document.body.dataset.reality=g.reality.toLowerCase();
   screen('realityScreen');
 }
 
-async function create(){try{let j=await api('/api/create');session={...session,...j};$('menu').classList.add('hidden');$('room').classList.remove('hidden');connectEvents()}catch(e){message(e.message)}}
-async function join(){let code=$('roomCode').value.trim();if(code.length!==6)return message('Enter the 6-character room code.');try{let j=await api('/api/join',{roomCode:code});session={...session,...j};$('menu').classList.add('hidden');$('room').classList.remove('hidden');connectEvents()}catch(e){message(e.message)}}
-async function toggleReady(){try{await api('/api/action',{roomCode:session.roomCode,playerId:session.playerId,action:'ready'})}catch(e){message(e.message)}}
-async function start(){try{await api('/api/action',{roomCode:session.roomCode,playerId:session.playerId,action:'start'})}catch(e){message(e.message)}}
-async function temporalAction(action){try{await api('/api/action',{roomCode:session.roomCode,playerId:session.playerId,action})}catch(e){message(e.message)}}
-function renderTemporal(g){
-  const t=g.temporal||{};
-  const phase=t.completed?'SEQUENCE COMPLETE':t.echoTraced?'ECHO TRACE COMPLETE':t.futureScanned?'FINAL STEP: FOLLOW THE ECHO':t.panelActivated?'NEXT: SCAN THE FUTURE':t.originRevealed?'NEXT: ACTIVATE THE PRESENT PANEL':'NEXT: REVEAL THE PAST CONTROL';
-  $('temporalPhase').textContent=phase;
-  const labels={inspect_origin:'REVEAL ORIGIN',activate_panel:'ACTIVATE PANEL',scan_future:'SCAN FUTURE',follow_echo:'FOLLOW ECHO'};
-  const action=g.availableActions&&g.availableActions[0];
-  const btn=$('temporalAction');
-  btn.textContent=action?labels[action]:'WAIT FOR THE TIMELINE';
-  btn.disabled=!action;
-  btn.onclick=()=>action&&temporalAction(action);
-  $('temporalStatus').innerHTML=[
-    ['PAST','Original control',t.originRevealed],
-    ['PRESENT','Control panel',t.panelActivated],
-    ['FUTURE','Future warning',t.futureScanned],
-    ['ECHO','Temporal trace',t.echoTraced]
-  ].map(x=>`<div class="step ${x[2]?'done':''}"><span>${x[2]?'✓':'○'}</span><div><b>${x[0]}</b><small>${x[1]}</small></div></div>`).join('');
-  $('eventLog').innerHTML=(t.eventLog&&t.eventLog.length?t.eventLog.map(e=>`<div class="event"><span>P${e.playerNumber}</span><p>${e.label}</p></div>`).join(''):'<div class="event empty">No temporal actions yet. Communicate with the other realities.</div>');
-  $('realityHint').textContent=t.completed?'The temporal door responds. All four realities contributed.':"Communicate what you see, then take your reality's step.";
+async function create(){try{let j=await api('/api/create');session={...session,...j};$('menu').classList.add('hidden');$('room').classList.remove('hidden');connectEvents();}catch(e){message(e.message);}}
+async function join(){let code=$('roomCode').value.trim();if(code.length!==6)return message('Enter the 6-character room code.');try{let j=await api('/api/join',{roomCode:code});session={...session,...j};$('menu').classList.add('hidden');$('room').classList.remove('hidden');connectEvents();}catch(e){message(e.message);}}
+async function toggleReady(){try{await api('/api/action',{roomCode:session.roomCode,playerId:session.playerId,action:'ready'});}catch(e){message(e.message);}}
+async function start(){try{await api('/api/action',{roomCode:session.roomCode,playerId:session.playerId,action:'start'});}catch(e){message(e.message);}}
+async function temporal(){
+  $('temporalBtn').disabled=true;
+  try{await api('/api/action',{roomCode:session.roomCode,playerId:session.playerId,action:'temporal'});}
+  catch(e){message(e.message);}
 }
-window.temporalAction=temporalAction;
 
-$('enterBtn').onclick=()=>{screen('lobbyScreen');$('connection').classList.remove('online');$('connection').innerHTML='<i></i> Not connected';};
-$('createBtn').onclick=create;$('joinBtn').onclick=join;$('startBtn').onclick=start;
+$('enterBtn').onclick=()=>{screen('lobbyScreen');setConnection('Not connected');};
+$('createBtn').onclick=create;$('joinBtn').onclick=join;$('startBtn').onclick=start;$('temporalBtn').onclick=temporal;
 $('roomCode').oninput=e=>e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
-$('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(session.roomCode);$('copyBtn').textContent='COPIED';setTimeout(()=>$('copyBtn').textContent='COPY CODE',1200)}catch{message('Share room code: '+session.roomCode)}};
+$('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(session.roomCode);$('copyBtn').textContent='COPIED';setTimeout(()=>$('copyBtn').textContent='COPY CODE',1200);}catch{message('Share room code: '+session.roomCode);}};
 window.toggleReady=toggleReady;

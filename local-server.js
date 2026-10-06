@@ -5,6 +5,7 @@ const {WebSocketServer}=require('ws');
 const create=require('./api/create');
 const join=require('./api/join');
 const action=require('./api/action');
+const health=require('./api/health');
 const {attachRealtimeConnection}=require('./lib/ws-handler');
 const PORT=process.env.PORT||3000;
 const server=http.createServer((req,res)=>{
@@ -12,6 +13,7 @@ const server=http.createServer((req,res)=>{
   if(u.pathname==='/api/create') return create(req,res);
   if(u.pathname==='/api/join') return join(req,res);
   if(u.pathname==='/api/action') return action(req,res);
+  if(u.pathname==='/api/health') return health(req,res);
   let file=u.pathname==='/'?'/index.html':u.pathname;
   const fp=path.normalize(path.join(__dirname,file));
   if(!fp.startsWith(__dirname)) return res.writeHead(403).end();
