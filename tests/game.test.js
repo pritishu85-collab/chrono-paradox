@@ -1,7 +1,7 @@
 const assert = require('assert');
 const {
   makeRoom, addPlayer, publicState, toggleReady, startGame, gameStateFor,
-  REALITIES, EVENT_PHASES, advanceTemporalEvent, temporalEventState
+  REALITIES, PROTOCOL_STEPS, advanceTemporalEvent, protocolState
 } = require('../lib/game');
 
 for (const count of [2,3,4]) {
@@ -20,14 +20,22 @@ for (const count of [2,3,4]) {
   assert.strictEqual(new Set(views.map(v=>v.reality)).size,count);
   assert.ok(views.every(v=>v.world && v.secret && v.clue && v.temporalEvent));
   assert.strictEqual(room.temporalEvent.phase,0);
+  assert.strictEqual(protocolState(room).requiredPlayerNumber,1);
 
-  for(let phase=1;phase<EVENT_PHASES.length;phase++){
-    advanceTemporalEvent(room,players[(phase-1)%players.length].id);
-    assert.strictEqual(room.temporalEvent.phase,phase);
-    const state=temporalEventState(room);
-    assert.strictEqual(state.phase,EVENT_PHASES[phase]);
-    assert.strictEqual(gameStateFor(room,players[0]).temporalEvent.phaseNumber,phase);
+  for(let step=0;step<count;step++){
+    const required=players[step];
+    assert.strictEqual(protocolState(room).requiredPlayerNumber,required.number);
+    assert.strictEqual(gameStateFor(room,required).temporalEvent.waitingForMe,true);
+    const other=players.find(p=>p.id!==required.id);
+    if(other) assert.throws(()=>advanceTemporalEvent(room,other.id),/Waiting for Player/);
+    advanceTemporalEvent(room,required.id);
+    assert.strictEqual(room.temporalEvent.phase,step+1);
+    assert.strictEqual(room.temporalEvent.lastActor,required.number);
   }
+  const complete=protocolState(room);
+  assert.strictEqual(complete.phase,'COMPLETE');
+  assert.strictEqual(complete.requiredPlayerNumber,null);
+  assert.strictEqual(complete.history.length,count);
   assert.throws(()=>advanceTemporalEvent(room,players[0].id),/already complete/);
 }
 
@@ -39,4 +47,4 @@ const noReady=makeRoom('READY01');
 const a=addPlayer(noReady); addPlayer(noReady);
 assert.throws(()=>startGame(noReady,a.id),/At least 2/);
 
-console.log('CHRONO PARADOX Step 3 tests: PASS');
+console.log('CHRONO PARADOX Step 4 tests: PASS');

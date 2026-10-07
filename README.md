@@ -55,3 +55,8 @@ Then test with 4 browser windows.
 
 
 Redis compatibility: this build recognizes standard Upstash/Vercel names plus the current Vercel integration names `UPSTASH_REDIS_REST_KV_REST_API_URL` / `UPSTASH_REDIS_REST_KV_REST_API_TOKEN`.
+
+
+## Step 4 — The Paradox Protocol
+
+Step 4 turns the temporal event into a cooperative sequence. The required action advances through the players actually present in the room: PAST → PRESENT → FUTURE → ECHO. Each reality receives different intelligence, and only the required player can perform the current step. Two- and three-player rooms automatically use only the participating realities.

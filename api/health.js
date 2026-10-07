@@ -16,9 +16,11 @@ module.exports = async function handler(req,res){
   }
   const redisSource =
     process.env.UPSTASH_REDIS_REST_URL ? 'UPSTASH_REDIS_REST_*' :
+    process.env.KV_REST_API_URL ? 'KV_REST_API_*' :
     process.env.UPSTASH_REDIS_REST_KV_REST_API_URL ? 'UPSTASH_REDIS_REST_KV_REST_API_*' :
     process.env.UPSTASH_REDIS_REST_KV_URL ? 'UPSTASH_REDIS_REST_KV_*' :
+    process.env.UPSTASH_REDIS_REST_API_URL ? 'UPSTASH_REDIS_REST_API_*' :
     process.env.UPSTASH_REDIS_REST_REDIS_URL ? 'UPSTASH_REDIS_REST_REDIS_*' :
-    process.env.KV_REST_API_URL ? 'KV_REST_API_*' : 'none';
+    'none';
   return jsonResponse(res,{ok:true,service:'chrono-paradox',redisConfigured:isRedis(),redisHealthy,redisSource,redisError});
 };

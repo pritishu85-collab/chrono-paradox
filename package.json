@@ -1,8 +1,8 @@
 {
   "name": "chrono-paradox",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "private": true,
-  "description": "CHRONO PARADOX - Vercel-ready 2–4 player realtime multiplayer prototype with temporal events",
+  "description": "CHRONO PARADOX - Vercel-ready 2–4 player realtime multiplayer prototype with cooperative paradox protocol",
   "scripts": {
     "start": "node local-server.js",
     "test": "node tests/game.test.js && node tests/vercel-api.test.js"

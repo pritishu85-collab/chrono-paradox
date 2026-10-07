@@ -77,11 +77,13 @@ function renderReality(g){
   $('eventTitle').textContent=ev.title;
   $('eventShared').textContent=ev.shared;
   $('eventPrivate').textContent=ev.private;
-  $('eventPhase').textContent=`PHASE ${ev.phaseNumber+1} / 4`;
+  $('eventPhase').textContent=ev.phase==='COMPLETE'?`COMPLETE · ${ev.totalSteps} STEPS`:`STEP ${ev.phaseNumber+1} / ${ev.totalSteps}`;
   $('eventActor').textContent=ev.lastActor?`Last action: Player ${ev.lastActor}`:'No action yet';
+  $('eventWait').textContent=ev.waitingMessage;
   $('temporalBtn').textContent=ev.actionLabel;
-  $('temporalBtn').disabled=!ev.actionAvailable;
+  $('temporalBtn').disabled=!ev.actionAvailable || !ev.waitingForMe;
   $('temporalBtn').classList.toggle('complete',!ev.actionAvailable);
+  $('temporalBtn').title=ev.waitingForMe?'Your reality is required for this step.':ev.waitingMessage;
 
   document.body.dataset.reality=g.reality.toLowerCase();
   screen('realityScreen');
