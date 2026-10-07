@@ -147,6 +147,27 @@ function renderReality(g){
     memoryCard.classList.add('hidden');
   }
 
+  const replay=g.temporalReplay;
+  const replayCard=$('replayCard');
+  if(replay && replay.status!=='LOCKED') {
+    replayCard.classList.remove('hidden');
+    replayCard.dataset.choice=g.timelineChoice?.result||'';
+    $('replayTitle').textContent=replay.title;
+    $('replayBadge').textContent=replay.badge;
+    $('replayShared').textContent=replay.shared;
+    $('replayPrivate').textContent=replay.private;
+    $('replayProgress').textContent=`REPLAYS ACKNOWLEDGED: ${replay.acknowledged} / ${replay.total}`;
+    $('replaySequence').textContent=`REPLAY SEQUENCE · ${replay.sequence}`;
+    $('replayEntries').innerHTML=replay.entries.map(e=>`<div class=\"replay-entry\"><span>${e.order}</span><div><strong>${e.label}</strong><small>${e.text}</small></div></div>`).join('');
+    const replayBtn=$('replayBtn');
+    replayBtn.disabled=!replay.canReplay;
+    replayBtn.textContent=replay.status==='COMPLETE'?'REPLAY SYNCHRONIZED':'REPLAY YOUR MEMORY';
+    replayBtn.classList.toggle('complete',replay.status==='COMPLETE');
+    $('replayWait').textContent=replay.status==='COMPLETE'?'ALL REALITIES HAVE REPLAYED THE TIMELINE.':(replay.myReplay?'YOUR REPLAY IS RECORDED. WAIT FOR THE OTHER REALITIES.':'REPLAY YOUR REALITY, THEN WAIT FOR THE TEAM.');
+  } else {
+    replayCard.classList.add('hidden');
+  }
+
   document.body.dataset.reality=g.reality.toLowerCase();
   screen('realityScreen');
 }
@@ -162,6 +183,12 @@ async function temporal(){
 }
 
 
+async function replay(){
+  $('replayBtn').disabled=true;
+  try{await api('/api/action',{roomCode:session.roomCode,playerId:session.playerId,action:'replay'});}
+  catch(e){message(e.message);}
+}
+
 async function vote(choice){
   $('preserveBtn').disabled=true; $('alterBtn').disabled=true;
   try{await api('/api/action',{roomCode:session.roomCode,playerId:session.playerId,action:'vote',choice});}
@@ -169,7 +196,7 @@ async function vote(choice){
 }
 
 $('enterBtn').onclick=()=>{screen('lobbyScreen');setConnection('Not connected');};
-$('createBtn').onclick=create;$('joinBtn').onclick=join;$('startBtn').onclick=start;$('temporalBtn').onclick=temporal;$('preserveBtn').onclick=()=>vote('PRESERVE');$('alterBtn').onclick=()=>vote('ALTER');
+$('createBtn').onclick=create;$('joinBtn').onclick=join;$('startBtn').onclick=start;$('temporalBtn').onclick=temporal;$('replayBtn').onclick=replay;$('preserveBtn').onclick=()=>vote('PRESERVE');$('alterBtn').onclick=()=>vote('ALTER');
 $('roomCode').oninput=e=>e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
 $('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(session.roomCode);$('copyBtn').textContent='COPIED';setTimeout(()=>$('copyBtn').textContent='COPY CODE',1200);}catch{message('Share room code: '+session.roomCode);}};
 window.toggleReady=toggleReady;

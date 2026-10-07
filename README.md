@@ -1,8 +1,8 @@
-# CHRONO PARADOX — Step 7
+# CHRONO PARADOX — Step 8
 
 **Four realities. One world. One chance to change it.**
 
-Step 7 adds **Temporal Memory**: the server derives and persists a memory ledger from the completed cooperative sequence and the team's final PRESERVE/ALTER decision. Every reality receives a different private memory while the shared record remains synchronized.
+Step 8 adds **Temporal Memory**: the server derives and persists a memory ledger from the completed cooperative sequence and the team's final PRESERVE/ALTER decision. Every reality receives a different private memory while the shared record remains synchronized.
 
 ## What is included
 
@@ -70,8 +70,23 @@ After the Paradox Protocol, every participating player sees reality-specific con
 After all players submit the Step 5 Preserve/Alter decision, the server resolves the branch and every reality receives a consequence-specific epilogue. Preserve creates one coherent stable timeline; Alter creates a visibly branched history with different private consequences for PAST, PRESENT, FUTURE, and ECHO. The result is persisted in Redis and synchronized to all connected players.
 
 
-## Step 7 — Temporal Memory
+## Step 8 — Temporal Memory
 After Step 6 resolves the team choice, the server exposes a persistent memory ledger. It records the four cooperative actions plus the final team decision. PRESERVE creates one canonical memory; ALTER creates a forked memory containing two histories. PAST, PRESENT, FUTURE, and ECHO each receive a different private interpretation of that same stored history. The memory is derived from the Redis-persisted room state, so reconnecting or refreshing the game does not lose it.
 
-## Step 7 testing
-The included Step 7 test suite verifies both PRESERVE and ALTER memory branches, including the complete five-entry memory record and reality-specific private memory.
+## Step 8 testing
+The included Step 8 test suite verifies both PRESERVE and ALTER memory branches, including the complete five-entry memory record and reality-specific private memory.
+
+
+## Step 8 — Temporal Replay
+
+Step 8 adds a synchronized replay layer after the Step 5–7 timeline decision and memory sequence is resolved.
+
+Included:
+- Server-authoritative Temporal Replay state
+- Private replay interpretation for PAST / PRESENT / FUTURE / ECHO
+- Replay acknowledgement for every participating player
+- Redis persistence across reconnects
+- Synchronized completion once all participating realities replay the recorded timeline
+- Preserves both PRESERVE and ALTER history semantics
+
+The replay does not erase or rewrite the Step 7 memory. It provides a safe, synchronized way for the team to revisit the recorded sequence.
