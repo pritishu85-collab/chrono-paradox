@@ -19,6 +19,7 @@ module.exports = async function handler(req,res){
       if(body.action==='ready') game.toggleReady(room,playerId);
       else if(body.action==='start') game.startGame(room,playerId);
       else if(body.action==='temporal') game.advanceTemporalEvent(room,playerId);
+      else if(body.action==='vote') game.castTimelineVote(room,playerId,String(body.choice||''));
       else throw new Error('Unknown action.');
       await store.setRoom(room);
     });
@@ -28,7 +29,7 @@ module.exports = async function handler(req,res){
     const status=msg==='Lobby session not found.'?404:
       (msg.includes('Only the host')?403:
       (msg.includes('At least 2')||msg.includes('already started')||msg.includes('already complete')?409:
-      (msg.includes('not started')?409:400)));
+      (msg.includes('not started')||msg.includes('already voted')||msg.includes('before choosing')||msg.includes('already resolved')?409:400)));
     return jsonResponse(res,{error:msg},status);
   }
 };

@@ -60,3 +60,7 @@ Redis compatibility: this build recognizes standard Upstash/Vercel names plus th
 ## Step 4 — The Paradox Protocol
 
 Step 4 turns the temporal event into a cooperative sequence. The required action advances through the players actually present in the room: PAST → PRESENT → FUTURE → ECHO. Each reality receives different intelligence, and only the required player can perform the current step. Two- and three-player rooms automatically use only the participating realities.
+
+
+## Step 5 — Timeline Choice
+After the Paradox Protocol, every participating player sees reality-specific consequences for two possible outcomes: PRESERVE or ALTER. Each player casts one private vote; the server resolves the shared timeline after all participating players decide. A majority selects the outcome; a tie defaults to PRESERVE.

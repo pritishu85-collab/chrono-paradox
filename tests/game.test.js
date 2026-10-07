@@ -1,7 +1,7 @@
 const assert = require('assert');
 const {
   makeRoom, addPlayer, publicState, toggleReady, startGame, gameStateFor,
-  REALITIES, PROTOCOL_STEPS, advanceTemporalEvent, protocolState
+  REALITIES, PROTOCOL_STEPS, advanceTemporalEvent, protocolState, castTimelineVote, timelineChoiceState
 } = require('../lib/game');
 
 for (const count of [2,3,4]) {
@@ -21,6 +21,7 @@ for (const count of [2,3,4]) {
   assert.ok(views.every(v=>v.world && v.secret && v.clue && v.temporalEvent));
   assert.strictEqual(room.temporalEvent.phase,0);
   assert.strictEqual(protocolState(room).requiredPlayerNumber,1);
+  assert.throws(()=>castTimelineVote(room,players[0].id,'PRESERVE'),/before choosing/);
 
   for(let step=0;step<count;step++){
     const required=players[step];
@@ -37,6 +38,16 @@ for (const count of [2,3,4]) {
   assert.strictEqual(complete.requiredPlayerNumber,null);
   assert.strictEqual(complete.history.length,count);
   assert.throws(()=>advanceTemporalEvent(room,players[0].id),/already complete/);
+  assert.strictEqual(timelineChoiceState(room,players[0]).canVote,true);
+  assert.throws(()=>castTimelineVote(room,players[0].id,'BAD'),/Invalid timeline choice/);
+  for(let i=0;i<count;i++){
+    const choice=i===count-1 ? 'ALTER' : 'PRESERVE';
+    castTimelineVote(room,players[i].id,choice);
+  }
+  const choiceState=timelineChoiceState(room,players[0]);
+  assert.strictEqual(choiceState.status,'RESOLVED');
+  assert.strictEqual(choiceState.result.choice, count===2 ? 'PRESERVE' : (count===3 ? 'PRESERVE' : 'PRESERVE'));
+  assert.throws(()=>castTimelineVote(room,players[0].id,'ALTER'),/already resolved/);
 }
 
 const full=makeRoom('FULL01');
@@ -47,4 +58,4 @@ const noReady=makeRoom('READY01');
 const a=addPlayer(noReady); addPlayer(noReady);
 assert.throws(()=>startGame(noReady,a.id),/At least 2/);
 
-console.log('CHRONO PARADOX Step 4 tests: PASS');
+console.log('CHRONO PARADOX Step 5 tests: PASS');

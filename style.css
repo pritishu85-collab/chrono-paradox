@@ -17,3 +17,9 @@ body[data-reality="past"] .signal{background:#f2c46b;box-shadow:0 0 16px #f2c46b
 
 /* Step 4 — Paradox Protocol */
 .event-wait{margin-top:7px;color:#75e7ff;font:700 10px ui-monospace,monospace;letter-spacing:.08em}.event-actions>div{min-width:0}.temporal-event-card{border-color:rgba(155,130,255,.2);background:linear-gradient(135deg,rgba(117,230,255,.035),rgba(155,110,255,.045))}.event-phase{white-space:nowrap}.event-private{border:1px solid rgba(117,230,255,.08)}
+
+
+/* Step 5 — Timeline Choice */
+.choice-card{margin-top:18px;padding:22px 24px;border:1px solid rgba(255,210,120,.2);border-radius:18px;background:linear-gradient(135deg,rgba(242,196,107,.045),rgba(169,135,255,.045));box-shadow:0 18px 50px rgba(0,0,0,.2)}
+.choice-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.choice-head h3{margin:6px 0 0}.choice-options{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}.choice-option{padding:17px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.035)}.choice-option h4{margin:0 0 8px;letter-spacing:.12em;font-size:13px}.choice-option p{min-height:74px;margin:0 0 14px;color:rgba(255,255,255,.75);line-height:1.45}.choice-option .primary{width:100%}.choice-option.alter{border-color:rgba(169,135,255,.18)}.choice-option.preserve{border-color:rgba(117,230,255,.18)}
+@media(max-width:700px){.choice-head{flex-direction:column}.choice-options{grid-template-columns:1fr}.choice-card{padding:18px}}

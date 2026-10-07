@@ -85,6 +85,34 @@ function renderReality(g){
   $('temporalBtn').classList.toggle('complete',!ev.actionAvailable);
   $('temporalBtn').title=ev.waitingForMe?'Your reality is required for this step.':ev.waitingMessage;
 
+  const choice=g.timelineChoice;
+  const choiceCard=$('choiceCard');
+  const choiceStatus=$('choiceStatus');
+  const choicePrivate=$('choicePrivate');
+  const preserveBtn=$('preserveBtn');
+  const alterBtn=$('alterBtn');
+  choiceCard.classList.toggle('hidden', choice.status==='LOCKED');
+  if(choice.status==='OPEN') {
+    $('choiceTitle').textContent='TIMELINE CHOICE: WHAT HAPPENS NEXT?';
+    $('choiceShared').textContent='Every reality has seen a different consequence. Discuss what you know, then each player chooses the future the team wants.';
+    choiceStatus.textContent=`DECISIONS SUBMITTED: ${choice.voteCount} / ${choice.total}`;
+    choicePrivate.textContent=choice.myVote ? `You chose ${choice.myVote}. Wait for the other realities.` : choice.choices[g.reality==='PAST'?'PRESERVE':'PRESERVE'].private;
+    // Show both consequence descriptions through the two option cards; each player gets their own private consequence text below.
+    $('preserveText').textContent=choice.choices.PRESERVE.private;
+    $('alterText').textContent=choice.choices.ALTER.private;
+    preserveBtn.disabled=!choice.canVote; alterBtn.disabled=!choice.canVote;
+    if(choice.myVote){ choiceStatus.textContent=`YOUR DECISION: ${choice.myVote} · ${choice.voteCount} / ${choice.total}`; }
+  } else if(choice.status==='RESOLVED') {
+    choiceCard.classList.remove('hidden');
+    $('choiceTitle').textContent='TIMELINE CHOICE: RESOLVED';
+    $('choiceShared').textContent=`The team chose ${choice.result.choice}. The shared timeline now follows that consequence.`;
+    choiceStatus.textContent=`FINAL DECISION · ${choice.result.choice}`;
+    choicePrivate.textContent=choice.result.private;
+    $('preserveText').textContent=choice.choices.PRESERVE.summary;
+    $('alterText').textContent=choice.choices.ALTER.summary;
+    preserveBtn.disabled=true; alterBtn.disabled=true;
+  }
+
   document.body.dataset.reality=g.reality.toLowerCase();
   screen('realityScreen');
 }
@@ -99,8 +127,15 @@ async function temporal(){
   catch(e){message(e.message);}
 }
 
+
+async function vote(choice){
+  $('preserveBtn').disabled=true; $('alterBtn').disabled=true;
+  try{await api('/api/action',{roomCode:session.roomCode,playerId:session.playerId,action:'vote',choice});}
+  catch(e){message(e.message);}
+}
+
 $('enterBtn').onclick=()=>{screen('lobbyScreen');setConnection('Not connected');};
-$('createBtn').onclick=create;$('joinBtn').onclick=join;$('startBtn').onclick=start;$('temporalBtn').onclick=temporal;
+$('createBtn').onclick=create;$('joinBtn').onclick=join;$('startBtn').onclick=start;$('temporalBtn').onclick=temporal;$('preserveBtn').onclick=()=>vote('PRESERVE');$('alterBtn').onclick=()=>vote('ALTER');
 $('roomCode').oninput=e=>e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
 $('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(session.roomCode);$('copyBtn').textContent='COPIED';setTimeout(()=>$('copyBtn').textContent='COPY CODE',1200);}catch{message('Share room code: '+session.roomCode);}};
 window.toggleReady=toggleReady;
