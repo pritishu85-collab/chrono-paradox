@@ -1,8 +1,8 @@
 {
   "name": "chrono-paradox",
-  "version": "8.0.0",
+  "version": "8.0.1",
   "private": true,
-  "description": "CHRONO PARADOX - Vercel-ready 2\u20134 player realtime multiplayer game with persistent temporal memory and synchronized temporal replay",
+  "description": "CHRONO PARADOX - Vercel-ready 2\u20134 player realtime multiplayer game with persistent temporal memory and replay",
   "scripts": {
     "start": "node local-server.js",
     "test": "node tests/game.test.js && node tests/step6.test.js && node tests/step7.test.js && node tests/step8.test.js && node tests/vercel-api.test.js"
