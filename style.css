@@ -46,3 +46,19 @@ body[data-reality="past"] .signal{background:#f2c46b;box-shadow:0 0 16px #f2c46b
 @media(max-width:900px){.replay-entries{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.replay-head{flex-direction:column}.replay-meta{align-items:flex-start;flex-direction:column}.replay-entries{grid-template-columns:1fr}.replay-card{padding:18px}.replay-actions{align-items:stretch;flex-direction:column}.replay-actions .primary{width:100%}}
 
+
+/* Final Polish v1.0 — onboarding and end-state clarity */
+.howto-strip{max-width:900px;margin:34px auto 30px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;text-align:left}
+.howto-strip>div{padding:14px;border:1px solid rgba(184,197,255,.13);border-radius:14px;background:rgba(255,255,255,.025)}
+.howto-strip span{display:block;color:#75e6ff;font:800 9px ui-monospace,monospace;letter-spacing:.16em}
+.howto-strip strong{display:block;margin-top:7px;font-size:11px;letter-spacing:.12em}
+.howto-strip small{display:block;margin-top:5px;color:#7f8da5;line-height:1.35}
+.title-note{margin:20px 0 0;color:#65728a;font:700 10px ui-monospace,monospace;letter-spacing:.09em}
+.briefing{display:flex;gap:14px;align-items:flex-start;margin-top:24px;padding:16px 18px;border:1px solid rgba(117,230,255,.13);border-radius:15px;background:linear-gradient(100deg,rgba(117,230,255,.035),rgba(169,135,255,.035))}
+.briefing-mark{color:#75e6ff;font-size:22px;line-height:1}
+.briefing strong{font-size:10px;letter-spacing:.16em;color:#75e6ff}
+.briefing p{margin:6px 0 0;color:#9eabba;line-height:1.5;font-size:13px}
+.replay-buttons{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.replay-buttons .ghost{padding:14px 18px}
+@media(max-width:800px){.howto-strip{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.howto-strip{grid-template-columns:1fr}.title-note{text-align:center}.briefing{padding:14px}.replay-buttons{width:100%;flex-direction:column}.replay-buttons .primary,.replay-buttons .ghost{width:100%}}

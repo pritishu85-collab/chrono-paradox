@@ -196,7 +196,7 @@ async function vote(choice){
 }
 
 $('enterBtn').onclick=()=>{screen('lobbyScreen');setConnection('Not connected');};
-$('createBtn').onclick=create;$('joinBtn').onclick=join;$('startBtn').onclick=start;$('temporalBtn').onclick=temporal;$('replayBtn').onclick=replay;$('preserveBtn').onclick=()=>vote('PRESERVE');$('alterBtn').onclick=()=>vote('ALTER');
+$('createBtn').onclick=create;$('joinBtn').onclick=join;$('startBtn').onclick=start;$('temporalBtn').onclick=temporal;$('replayBtn').onclick=replay;$('restartBtn').onclick=()=>{window.location.href='/';};$('preserveBtn').onclick=()=>vote('PRESERVE');$('alterBtn').onclick=()=>vote('ALTER');
 $('roomCode').oninput=e=>e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
 $('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(session.roomCode);$('copyBtn').textContent='COPIED';setTimeout(()=>$('copyBtn').textContent='COPY CODE',1200);}catch{message('Share room code: '+session.roomCode);}};
 window.toggleReady=toggleReady;

@@ -10,11 +10,19 @@
   <div class="title-wrap"><div class="eyebrow">COOPERATIVE TEMPORAL ADVENTURE</div>
   <h1>CHRONO <span>PARADOX</span></h1><p class="tagline">Four realities. One world. One chance to change it.</p>
   <div class="timeline-orbit"><span>PAST</span><i></i><span>PRESENT</span><i></i><span>FUTURE</span><i></i><span>ECHO</span></div>
-  <button id="enterBtn" class="primary">ENTER THE PARADOX <b>→</b></button></div>
+  <div class="howto-strip" aria-label="How to play">
+    <div><span>01</span><strong>SEE</strong><small>Receive a private view of time.</small></div>
+    <div><span>02</span><strong>SHARE</strong><small>Combine clues with your team.</small></div>
+    <div><span>03</span><strong>DECIDE</strong><small>Preserve or alter the timeline.</small></div>
+    <div><span>04</span><strong>REPLAY</strong><small>Remember the history you created.</small></div>
+  </div>
+  <button id="enterBtn" class="primary">ENTER THE PARADOX <b>→</b></button>
+  <p class="title-note">2–4 players · cooperation is required · every reality sees something different</p></div>
 </section>
 
 <section id="lobbyScreen" class="screen"><div class="panel">
 <header class="panel-head"><div><div class="eyebrow">CHRONO PARADOX</div><h2>Temporal Lobby</h2><p>Gather 2–4 players. Every perspective matters.</p></div><div id="connection" class="connection"><i></i> Connecting</div></header>
+<div class="briefing"><div class="briefing-mark">◈</div><div><strong>YOUR OBJECTIVE</strong><p>Work together to reconstruct the paradox. Each player sees a different moment in time, so no one has the complete picture.</p></div></div>
 <div id="menu" class="menu-grid"><button id="createBtn" class="menu-card"><span class="icon">＋</span><strong>Create Game</strong><small>Start a new timeline</small></button>
 <div class="join-card"><span class="icon">⌁</span><strong>Join Game</strong><small>Enter a friend's room code</small><div class="join-row"><input id="roomCode" maxlength="6" placeholder="ROOM CODE"><button id="joinBtn" class="secondary">JOIN</button></div></div></div>
 <div id="room" class="room hidden"><div class="room-banner"><div><span class="label">ROOM CODE</span><strong id="roomCodeDisplay">------</strong></div><button id="copyBtn" class="ghost">COPY CODE</button></div>
@@ -68,7 +76,7 @@
     <div class="event-private replay-private"><span class="private-dot">◈</span><div><strong>YOUR REPLAY LENS</strong><p id="replayPrivate"></p></div></div>
     <div class="replay-meta"><span id="replayProgress">REPLAYS ACKNOWLEDGED: 0 / 0</span><b id="replaySequence">REPLAY SEQUENCE · 0</b></div>
     <div id="replayEntries" class="replay-entries"></div>
-    <div class="replay-actions"><div><span id="replayWait" class="event-wait"></span></div><button id="replayBtn" class="primary">REPLAY YOUR MEMORY <b>→</b></button></div>
+    <div class="replay-actions"><div><span id="replayWait" class="event-wait"></span></div><div class="replay-buttons"><button id="replayBtn" class="primary">REPLAY YOUR MEMORY <b>→</b></button><button id="restartBtn" class="ghost hidden">RETURN TO TITLE</button></div></div>
   </section>
   <div class="reality-footer"><span>FOUR REALITIES · ONE WORLD</span><span id="realityHint">Share your reality, then choose the future together.</span></div>
 </div></section>
