@@ -1,7 +1,7 @@
 const assert = require('assert');
 const {
   makeRoom, addPlayer, publicState, toggleReady, startGame, gameStateFor,
-  REALITIES, PROTOCOL_STEPS, advanceTemporalEvent, protocolState, castTimelineVote, timelineChoiceState
+  REALITIES, PROTOCOL_STEPS, advanceTemporalEvent, protocolState, castTimelineVote, timelineChoiceState, timelineOutcomeState, TIMELINE_OUTCOMES
 } = require('../lib/game');
 
 for (const count of [2,3,4]) {
@@ -48,6 +48,11 @@ for (const count of [2,3,4]) {
   assert.strictEqual(choiceState.status,'RESOLVED');
   assert.strictEqual(choiceState.result.choice, count===2 ? 'PRESERVE' : (count===3 ? 'PRESERVE' : 'PRESERVE'));
   assert.throws(()=>castTimelineVote(room,players[0].id,'ALTER'),/already resolved/);
+  const outcome=timelineOutcomeState(room,players[0]);
+  assert.strictEqual(outcome.status,'RESOLVED');
+  assert.strictEqual(outcome.choice,'PRESERVE');
+  assert.ok(outcome.title && outcome.shared && outcome.private);
+  assert.ok(outcome.objects['Temporal Door'] && outcome.objects['Central Floor'] && outcome.objects['Observation Wall']);
 }
 
 const full=makeRoom('FULL01');

@@ -113,6 +113,23 @@ function renderReality(g){
     preserveBtn.disabled=true; alterBtn.disabled=true;
   }
 
+  const outcome=g.timelineOutcome;
+  const outcomeCard=$('outcomeCard');
+  if(outcome && outcome.status==='RESOLVED') {
+    outcomeCard.classList.remove('hidden');
+    outcomeCard.dataset.choice=outcome.choice;
+    $('outcomeTitle').textContent=outcome.title;
+    $('outcomeBadge').textContent=outcome.badge;
+    $('outcomeShared').textContent=outcome.shared;
+    $('outcomePrivate').textContent=outcome.private;
+    $('outcomeDoor').textContent=outcome.objects['Temporal Door'];
+    $('outcomeFloor').textContent=outcome.objects['Central Floor'];
+    $('outcomeWall').textContent=outcome.objects['Observation Wall'];
+    $('outcomeState').textContent=outcome.state;
+  } else {
+    outcomeCard.classList.add('hidden');
+  }
+
   document.body.dataset.reality=g.reality.toLowerCase();
   screen('realityScreen');
 }
