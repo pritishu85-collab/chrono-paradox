@@ -130,6 +130,23 @@ function renderReality(g){
     outcomeCard.classList.add('hidden');
   }
 
+  const memory=g.temporalMemory;
+  const memoryCard=$('memoryCard');
+  if(memory && memory.status==='RESOLVED') {
+    memoryCard.classList.remove('hidden');
+    memoryCard.dataset.choice=memory.choice;
+    $('memoryTitle').textContent=memory.title;
+    $('memoryBadge').textContent=memory.badge;
+    $('memoryShared').textContent=memory.shared;
+    $('memoryPrivate').textContent=memory.private;
+    $('memoryState').textContent=memory.state;
+    $('memoryRecord').textContent=memory.record;
+    $('memorySequence').textContent=`PERSISTED SEQUENCE · ${memory.persistedSequence}`;
+    $('memoryEntries').innerHTML=memory.entries.map(e=>`<div class=\"memory-entry\"><span>${e.order}</span><div><strong>${e.label}</strong><small>${e.text}</small></div></div>`).join('');
+  } else {
+    memoryCard.classList.add('hidden');
+  }
+
   document.body.dataset.reality=g.reality.toLowerCase();
   screen('realityScreen');
 }
